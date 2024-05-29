@@ -4,6 +4,7 @@ import android.app.*
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -81,7 +82,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
     override fun onCreate() {
         super.onCreate()
         startLocatorService(this)
-        startForeground(notificationId, getNotification())
+        startForegroundService()
     }
 
     private fun start() {
@@ -93,11 +94,17 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         }
 
         // Starting Service as foreground with a notification prevent service from closing
-        val notification = getNotification()
-        startForeground(notificationId, notification)
-
+        startForegroundService()
         pluggables.forEach {
             context?.let { it1 -> it.onServiceStart(it1) }
+        }
+    }
+
+    private fun startForegroundService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(notificationId, getNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+        } else {
+            startForeground(notificationId, getNotification())
         }
     }
 
@@ -293,7 +300,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         }
     }
 
-    override fun onLocationUpdated(location: HashMap<Any, Any>?) {
+    override fun onLocationUpdated(location: HashMap<Any, Any?>?) {
         try {
             context?.let {
                 FlutterInjector.instance().flutterLoader().ensureInitializationComplete(
