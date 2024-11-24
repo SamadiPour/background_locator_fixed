@@ -2,14 +2,14 @@ group 'yukams.app.background_locator_2'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.7.20'
+    ext.kotlin_version = '1.9.24'
     repositories {
         google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:8.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -52,7 +52,7 @@ android {
 
     dependencies {
         implementation "com.google.android.gms:play-services-location:21.0.1"
-        implementation "com.google.code.gson:gson:2.10.1"
+        implementation "com.google.code.gson:gson:2.11.0"
     }
 
     lintOptions {
